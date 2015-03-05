@@ -4,7 +4,8 @@
   "description": "A backend of lolqueen.",
   "main": "index.js",
   "scripts": {
-    "test": "make test"
+    "test": "make test",
+    "start": "./node_modules/.bin/nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -17,6 +18,8 @@
   },
   "homepage": "https://github.com/LOLQueen/LOLQueen-express",
   "dependencies": {
-    "express": "^4.12.2"
+    "nodemon": "^1.3.7",
+    "request": "^2.53.0",
+    "require-dir": "^0.1.0"
   }
 }
