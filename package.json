@@ -1,0 +1,22 @@
+{
+  "name": "lolqueen-express",
+  "version": "1.0.0",
+  "description": "A backend of lolqueen.",
+  "main": "index.js",
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:LOLQueen/LOLQueen-express.git"
+  },
+  "author": "\"Ramanpreet Nara\" \"Mandish Shah\"",
+  "license": "Apache 2.0",
+  "bugs": {
+    "url": "https://github.com/LOLQueen/LOLQueen-express/issues"
+  },
+  "homepage": "https://github.com/LOLQueen/LOLQueen-express",
+  "dependencies": {
+    "express": "^4.12.2"
+  }
+}
