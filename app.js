@@ -14,34 +14,42 @@ var server = http.createServer(function(req, res){
 
     var URL = url.parse(req.url, true);
 
-    return client.get$(URL.pathname)
-            .then(function(reply){
-                if (reply && ! URL.query.refresh) {
-                    return {
-                        statusCode:200,
-                        body:reply
-                    };
+    // if we get ?refresh=1 or ?refresh=true or ?refresh, hit the RIOT API directly
+    // else, hit our cache instead
+    var awaitResponse = (~['true', '1', ''].indexOf(URL.query.refresh))
+        ?   fetchData(URL.pathname, 24*60*60)
+        :   checkCache(URL.pathname)
+                .then(function(response){
+                    return response || fetchData(URL.pathname, 24*60*60);
+                });
+
+    awaitResponse
+        .then(function(response){
+            res.statusCode = response.statusCode;
+            res.end(response.body);
+        })
+        .catch(function(){
+            console.log.apply(console, arguments);
+
+            res.statusCode = 500;
+            res.end(JSON.stringify({
+                error: {
+                    title: 'LOLQueen server Error!',
+                    message: 'An error occured while fetching data from the RIOT API.'
                 }
-
-                return fetchData(URL.pathname, 24*60*60);
-
-            })
-            .then(function(response){
-                res.statusCode = response.statusCode;
-                res.end(response.body);
-            })
-            .catch(function(){
-                console.log.apply(console, arguments);
-
-                res.statusCode = 500;
-                res.end(JSON.stringify({
-                    error: {
-                        title: 'LOLQueen server Error!',
-                        message: 'An error occured while fetching data from the RIOT API.'
-                    }
-                }));
-            });
+            }));
+        });
 });
+
+function checkCache(pathname){
+    return client.get$(pathname)
+        .then(function(reply){
+            return reply && {
+                statusCode:200,
+                body:reply
+            };
+        });
+}
 
 function fetchData(pathname, expire){
 
