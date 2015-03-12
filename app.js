@@ -1,7 +1,9 @@
 var http = require('http');
-var request = require('request');
 var url = require('url');
-var redis = require('redis');
+
+var bluebird = require('bluebird');
+var redis = bluebird.promisifyAll(require('redis'), {suffix: '$'});
+var request = bluebird.promisifyAll(require('request'), {suffix: '$'});
 
 var apiKey = Secret['api-key'];
 
@@ -19,20 +21,27 @@ var server = http.createServer(function(req, res){
         pathname: req.url
     });
 
-    client.get(req.url, function(err, reply){
-        if (reply) {
-            res.end(reply);
-            return;
-        }
+    client.get$(req.url)
+        .then(function(reply){
+            if (reply) { return reply; }
 
-        request.get({url: link, json:false}, function(e, r, payload){
-            client.set(req.url, payload, function(){
-                client.expire(req.url, 24*60*60, function(){
-                    res.end(payload);
-                });
-            });
-        });
-    });
+            return request.get$({url: link, json: false})
+                .then(function(results){
+                    return client.set$(req.url, reply = results[1]);
+                })
+                .then(function(){
+                    return client.expire$(req.url, 24*60*60);
+                })
+                .then(function(){
+                    return reply;
+                })
+
+            return
+        })
+        .then(function(reply){
+            res.end(reply);
+        })
+        .catch(console.log.bind(console));
 
 });
 
