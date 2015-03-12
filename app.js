@@ -23,25 +23,41 @@ var server = http.createServer(function(req, res){
 
     client.get$(req.url)
         .then(function(reply){
-            if (reply) { return reply; }
+            var response = {
+                statusCode: 200,
+                body: reply
+            };
+
+            if (reply) { return response; }
 
             return request.get$({url: link, json: false})
                 .then(function(results){
-                    return client.set$(req.url, reply = results[1]);
+                    response = results[0];
+                    return client.set$(req.url, results[1]);
                 })
                 .then(function(){
                     return client.expire$(req.url, 24*60*60);
                 })
                 .then(function(){
-                    return reply;
-                })
+                    return response;
+                });
 
-            return
         })
-        .then(function(reply){
-            res.end(reply);
+        .then(function(response){
+            res.statusCode = response.statusCode;
+            res.end(response.body);
         })
-        .catch(console.log.bind(console));
+        .catch(function(){
+            console.log.apply(console, arguments);
+
+            res.statusCode = 500;
+            res.end(JSON.stringify({
+                error: {
+                    title: 'LOLQueen server Error!',
+                    message: 'An error occured while fetching data from the RIOT API.'
+                }
+            }));
+        });
 
 });
 
