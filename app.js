@@ -12,6 +12,9 @@ var client = redis.createClient(6379, '127.0.0.1');
 
 var server = http.createServer(function(req, res){
 
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
     var URL = url.parse(req.url, true);
 
     // if we get ?refresh=1 or ?refresh=true or ?refresh, hit the RIOT API directly
