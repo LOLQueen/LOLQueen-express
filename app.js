@@ -1,5 +1,6 @@
 var http = require('http');
 var url = require('url');
+var express = require('express');
 
 var bluebird = require('bluebird');
 var redis = bluebird.promisifyAll(require('redis'), {suffix: '$'});
@@ -8,9 +9,14 @@ var request = bluebird.promisifyAll(require('request'), {suffix: '$'});
 var apiKey = Secret['api-key'];
 
 // create redis client
-var client = redis.createClient(6379, '127.0.0.1');
+var client  = redis.createClient(6379, '127.0.0.1');
 
-var server = http.createServer(function(req, res){
+var app     = express();
+var server  = http.createServer(app);
+
+app.use('/assets/dragon', express.static('./public/dragon/5.6.1'));
+
+app.use(function(req, res){
 
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
