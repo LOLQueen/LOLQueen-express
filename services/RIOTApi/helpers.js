@@ -24,7 +24,6 @@ function fetch(base) {
       },
     })
       .then(prop(1))
-      .then(trace)
       .then(JSON.parse);
   }
 }
