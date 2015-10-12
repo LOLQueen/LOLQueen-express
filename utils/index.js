@@ -12,3 +12,8 @@ export function handleError(response, {error}) {
 export function makeRouter() {
   return Router({ mergeParams: true });
 }
+
+export function trace(thing) {
+  console.log(thing);
+  return thing;
+}

@@ -1,5 +1,5 @@
 import { fetchSummoners } from 'services/RIOTApi';
-import { makeRouter } from 'utils';
+import { makeRouter, handleErrors } from 'utils';
 
 let router = makeRouter();
 
@@ -10,6 +10,7 @@ router.get('/', async function(request, response) {
   const names = toArray(request.query.names);
 
   try {
+    console.log(fetchSummoners);
     const body = await fetchSummoners({
       names, region
     });
@@ -17,7 +18,9 @@ router.get('/', async function(request, response) {
     response.send(body);
 
   } catch (ex) {
-    response.end('whoops');
+    handleErrors(response, {
+      error: ex
+    });
   }
 
 });
