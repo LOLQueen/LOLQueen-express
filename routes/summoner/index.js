@@ -1,9 +1,7 @@
-import { Router } from 'express';
 import { fetchSummoners } from 'services/RIOTApi';
+import { makeRouter } from 'utils';
 
-let router = Router({
-  mergeParams: true
-});
+let router = makeRouter();
 
 const toArray = x => Array.isArray(x) ? x : [x];
 
