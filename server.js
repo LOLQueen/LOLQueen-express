@@ -4,8 +4,8 @@ import http from 'http';
 let app = express();
 
 // requiring routes
-import SummonerRoutes from 'routes/summoner';
-app.use('/:region/summoner', SummonerRoutes);
+import routes from 'routes';
+app.use('/:region', routes);
 
 let server = http.createServer(app);
 
