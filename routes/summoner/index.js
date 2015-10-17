@@ -10,11 +10,10 @@ router.get('/', async function(request, response) {
   const names = toArray(request.query.names);
 
   try {
-    console.log(fetchSummoners);
     const body = await fetchSummoners({
       names, region
     });
-    
+
     response.send(body);
 
   } catch (ex) {
