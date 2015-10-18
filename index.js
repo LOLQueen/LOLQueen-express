@@ -1,6 +1,7 @@
 require('babel-core/polyfill');
 require('babel-core/register')({
   experimental: true,
+  stage: 0,
   optional: ['asyncToGenerator'],
 });
 
