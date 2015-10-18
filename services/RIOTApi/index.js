@@ -30,7 +30,6 @@ async function fetchChampions({region}) {
   const response = await fetchStaticFromRiot({
     region, url: `v1.2/champion`
   });
-
   return values(response.data).reduce((map, champ) => (
     map[champ.id] = transformChampion(champ), map
   ), {});
@@ -39,8 +38,9 @@ async function fetchChampions({region}) {
 export const fetchChampion = () => {
   const store = {};
   return async function fetch({region, id}) {
-    store[region] = store[region] || await fetchChampions({region});
-    return id && store[region][id];
+    store[region] = store[region] || fetchChampions({region});
+    const champions = await store[region];
+    return id && champions[id];
   };
 }();
 
