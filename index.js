@@ -1,8 +1,11 @@
-var requireDir = require('require-dir');
-var path = require('path');
+require('babel-core/polyfill');
+require('babel-core/register')({
+  experimental: true,
+  stage: 0,
+  optional: ['asyncToGenerator'],
+});
 
-// setup global secrets folder
-GLOBAL.Secret = requireDir('./secrets');
+require('app-module-path').addPath(__dirname);
 
 // start server
-require('./app.js');
+require('./server.js');

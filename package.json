@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "make test",
-    "start": "./node_modules/.bin/nodemon index.js"
+    "start": "./node_modules/.bin/nodemon -w . -q index.js"
   },
   "repository": {
     "type": "git",
@@ -18,12 +18,20 @@
   },
   "homepage": "https://github.com/LOLQueen/LOLQueen-express",
   "dependencies": {
+    "app-module-path": "^1.0.4",
+    "babel-core": "^5.8.25",
     "bluebird": "^2.10.2",
+    "chai": "^3.3.0",
+    "colors": "^1.1.2",
     "express": "^4.13.3",
+    "express-redis-cache": "^0.1.8",
     "hiredis": "^0.4.1",
     "nodemon": "^1.7.1",
+    "ramda": "^0.18.0",
     "redis": "^2.2.1",
     "request": "^2.65.0",
-    "require-dir": "^0.3.0"
+    "require-dir": "^0.3.0",
+    "require-directory": "^2.1.1",
+    "winston": "^1.1.0"
   }
 }

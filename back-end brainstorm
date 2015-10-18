@@ -1,0 +1,107 @@
+GET /${region}/summoner?names=AznCr4ck&names=HorseCrusher
+  {
+    AznCr4ck: {
+      id: number,
+      summonerLevel: number,
+      profileIdconId: number
+    },
+    HorseCrusher: {
+      ...
+    }
+  }
+
+  GET /api/lol/{region}/v1.4/summoner/by-name/{summonerNames}                  
+
+  Response data returned from RIOT end-point:
+    {"azncr4ck": {
+       "id": 36421182,
+       "name": "AznCr4ck",
+       "profileIconId": 561,
+       "revisionDate": 1444509848000,
+       "summonerLevel": 30
+    }}
+
+
+GET /${region}/matches?summoner-id=AznCr4ck
+
+  {
+    matches: [
+      {
+        info: {
+          occured_at: ISO string,       [createDate]
+          queueType: string (an enum),  [subType]
+          gameLength: milliseconds      [we'll have to query /match endpoint with game id]
+          didWin: Boolean               [rawstats.win]
+        },
+        champion: {
+          name: 
+          id:                           [championId]
+          image:
+        },
+        spells: [                       [spell1 and spell2, query to get more details]
+          {
+            name: 
+            description: 
+            image-url: 
+          },
+          {
+            name: 
+            description:
+            image-url:
+          }
+        ],
+        items: [                        [items 0 to 6] (integers so we'll have to do another fetch)
+          {
+            name: 
+            description:
+            image-url: 
+          },
+          ...
+        ],
+        trinket: {                      [item 6]
+          name: 
+          description:
+          image-url:
+        },
+        teams: {
+          blue: [
+            {
+              summonerName: 
+              champion: {               [champion id, from which we can get the name]
+                name: 
+                image-url: 
+              },
+            }
+          ],
+          purple: [
+            {
+              summonerName: 
+              champion: {
+                name: 
+                image-url: 
+              },
+            }
+          ]
+        }
+x        team: 'blue';
+        playerStats: {
+          kills: 
+          deaths: 
+          assists: 
+          championLevel:                 [level]
+          creeps:
+          gold: 
+          wardsPlaced: 
+          role: 'top/mid/jungle/ad/support'
+          totalDamageDeltToChamptions,
+          totalDamageTaken:
+        }
+      }
+    ]
+  }
+
+  extra endpoints we have to hit
+    - spell (for spell details from ids)
+    - summoner (for name from id)
+    - champion (for names from ids)
+    - match (for additional information about game (like duration) from game id)
