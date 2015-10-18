@@ -22,6 +22,7 @@
     "babel-core": "^5.8.25",
     "bluebird": "^2.10.2",
     "chai": "^3.3.0",
+    "colors": "^1.1.2",
     "express": "^4.13.3",
     "express-redis-cache": "^0.1.8",
     "hiredis": "^0.4.1",
