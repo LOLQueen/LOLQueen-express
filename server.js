@@ -1,5 +1,15 @@
 import express from 'express';
 import http from 'http';
+import RedisCache from 'services/RedisCache';
+import {green, red} from 'colors/safe';
+
+RedisCache.on('message', (message) => {
+  console.log(`${green.bold('RedisCache Message:')} ${message}`);
+});
+
+RedisCache.on('error', (message) => {
+  console.log(`${red.bold('RedisCache Message:')} ${message}`);
+});
 
 let app = express();
 
@@ -10,5 +20,5 @@ app.use('/:region', routes);
 let server = http.createServer(app);
 
 server.listen(9000, ()=> {
-  console.log('Listening to port 9000!');
+  console.log(green.bold('Listening to port 9000!'));
 });
