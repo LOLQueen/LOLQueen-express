@@ -29,5 +29,8 @@ function fetch(base) {
 }
 
 export const fetchFromRiot = fetch(`${BASE_URL}/api/lol`);
-export const fetchStaticFromRiot =
-fetch(`${STATIC_BASE_URL}/api/lol/static-data`);
+
+const fetchStatic = fetch(`${STATIC_BASE_URL}/api/lol/static-data`);
+export async function fetchStaticFromRiot(...args) {
+  return (await fetchStatic(...args)).data;
+}

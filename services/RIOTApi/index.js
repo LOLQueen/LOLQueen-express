@@ -5,19 +5,36 @@ import {
   transformSummoner,
 } from './transforms';
 
-import {prop, values} from 'ramda';
+import {
+  prop,
+  values,
+  mergeAll,
+  splitEvery,
+  uniq,
+  compose,
+  keys,
+  zipObj,
+  partial,
+} from 'ramda';
 
-export async function fetchSummoners({names, region}) {
-  expect(names).to.be.an('array');
-  return fetchFromRiot({
-    region, url: `v1.4/summoner/by-name/${names}`
-  });
+const intoFourties = compose(splitEvery(40), uniq);
+const reindex = partial(reindexWith, [x => x]);
+
+async function reindexWith (fn, key, data) {
+  return values(data).reduce(async (map, item) => (
+    (await map)[item[key]] = await fn(item), map
+  ), {});
 }
 
-export async function fetchSummoner({region, id}) {
-  return id && (await fetchFromRiot({
-    region, url: `v1.4/summoner/${id}`
-  }))[id];
+export async function fetchSummoners({names, ids, region}) {
+  const array = intoFourties(ids ? ids : names);
+  return mergeAll(await* array.map(async (params) => {
+    return reindexWith(
+      transformSummoner, 'id', await fetchFromRiot({
+        region, url: `v1.4/summoner/${ids ? params : `by-name/${params}`}`
+      })
+    );
+  }));
 }
 
 export async function fetchGames({region, summonerId}) {
@@ -26,32 +43,43 @@ export async function fetchGames({region, summonerId}) {
   });
 }
 
-async function fetchChampions({region}) {
-  const response = await fetchStaticFromRiot({
-    region, url: `v1.2/champion`
-  });
-  return values(response.data).reduce((map, champ) => (
-    map[champ.id] = transformChampion(champ), map
-  ), {});
+export async function fetchChampions({region}) {
+  return reindexWith(
+    transformChampion, 'id', await fetchStaticFromRiot({
+      region, url: `v1.2/champion`
+    })
+  );
 }
 
-export const fetchChampion = () => {
+async function fetchSpells({region}) {
+  return reindex(
+    'id', await fetchStaticFromRiot({
+      region, url: `v1.2/summoner-spell`
+    })
+  );
+}
+
+async function fetchItems({region}) {
+  return await fetchStaticFromRiot({
+    region, url: `v1.2/item`
+  });
+}
+
+export async function fetchSummoner({region, id}) {
+  return id && prop(
+    id, (await fetchSummoners({region, ids: [id]}))[id]
+  );
+}
+
+export const fetchChampion = fetchSingleWith(fetchChampions);
+export const fetchSpell = fetchSingleWith(fetchSpells);
+export const fetchItem = fetchSingleWith(fetchItems);
+
+function fetchSingleWith(fn) {
   const store = {};
-  return async function fetch({region, id}) {
-    store[region] = store[region] || fetchChampions({region});
-    const champions = await store[region];
-    return id && champions[id];
+  return async function ({region, id}) {
+    store[region] = store[region] || fn({region});
+    const data = await store[region];
+    return id && data[id];
   };
-}();
-
-export async function fetchSpell({region, id}) {
-  return id && fetchStaticFromRiot({
-    region, url: `v1.2/summoner-spell/${id}`
-  });
-}
-
-export async function fetchItem({region, id}) {
-  return id && fetchStaticFromRiot({
-    region, url: `v1.2/item/${id}`
-  });
 }

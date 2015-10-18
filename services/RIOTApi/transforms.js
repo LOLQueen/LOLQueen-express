@@ -8,8 +8,6 @@ export async function transformChampion(champ) {
 }
 
 export async function transformSummoner(summoner) {
-  console.log(summoner);
-  return summoner;
   return {
     id: summoner.id,
     name: summoner.name,

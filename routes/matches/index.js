@@ -1,12 +1,15 @@
 import {
   fetchGames,
   fetchChampion,
+  fetchChampions,
   fetchSpell,
   fetchItem,
   fetchSummoner,
+  fetchSummoners,
 } from 'services/RIOTApi';
 import {handleError, makeRouter} from 'utils';
-import {map, propEq, clone} from 'ramda';
+import {map, propEq, clone, __, prop, compose, pluck, chain, objOf, merge}
+from 'ramda';
 
 let router = makeRouter();
 
@@ -16,7 +19,9 @@ router.get('/', async function(request, response){
 
   try {
     const {games} = await fetchGames({ region, summonerId });
-    response.send(await* map(transformGameToMatch)(games));
+    response.send(await* map(transformGameToMatch)(
+      await transformPlayersInGames(region, games)
+    ));
   } catch (ex) {
     handleError(response, {
       error: ex
@@ -26,17 +31,29 @@ router.get('/', async function(request, response){
 
 const isTeamPurple = propEq('teamId', 200);
 const isTeamBlue = propEq('teamId', 100);
+const extract = (property) => compose(
+  chain(pluck(property)),
+  pluck('fellowPlayers')
+);
 
-async function transformTeam(region, team) {
-  return await* team.map(async (player) => {
-    return {
-      champion: await fetchChampion({
-        region, id: player.championId
+async function transformPlayersInGames(region, games) {
+  const summonerIds = extract('summonerId')(games);
+  const championIds = extract('championId')(games);
+
+  const summoners = await fetchSummoners({region, ids: summonerIds});
+  const champions = await fetchChampions({region});
+
+  return games.map((game) => {
+    const fellowPlayers = game.fellowPlayers;
+    return merge(game, {
+      fellowPlayers: fellowPlayers.map((player) => {
+        return player && {
+          summoner: summoners[player.summonerId],
+          champion: champions[player.championId],
+          teamId: player.teamId,
+        };
       }),
-      summoner: await fetchSummoner({
-        region, id: player.summonerId
-      }),
-    };
+    });
   });
 }
 
@@ -44,7 +61,7 @@ async function transformGameToMatch(game) {
   const region = 'na';
   const purpleTeam = game.fellowPlayers.filter(isTeamPurple);
   const blueTeam = game.fellowPlayers.filter(isTeamBlue);
-  return {
+  const stuff = {
     info: {
       occuredAt: game.createDate,
       queueType: game.subType,
@@ -64,12 +81,13 @@ async function transformGameToMatch(game) {
       region, id: game.stats.item6,
     }),
     teams: {
-      blue: await transformTeam(region, blueTeam),
-      purple: await transformTeam(region, purpleTeam),
+      blue: blueTeam,
+      purple: purpleTeam,
     },
     team: isTeamBlue(game) ? 'blue' : 'purple',
     stats: clone(game.stats)
   };
+  return stuff;
 }
 
 export default router;
