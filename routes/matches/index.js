@@ -7,7 +7,6 @@ import {
 } from 'services/RIOTApi';
 import {handleError, makeRouter} from 'utils';
 import {map, propEq, clone} from 'ramda';
-import fs from 'fs';
 
 let router = makeRouter();
 
@@ -70,7 +69,7 @@ async function transformGameToMatch(game) {
     },
     team: isTeamBlue(game) ? 'blue' : 'purple',
     stats: clone(game.stats)
-  }
+  };
 }
 
 export default router;
