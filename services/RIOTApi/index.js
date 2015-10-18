@@ -67,7 +67,7 @@ async function fetchItems({region}) {
 
 export async function fetchSummoner({region, id}) {
   return id && prop(
-    id, (await fetchSummoners({region, ids: [id]}))[id]
+    id, await fetchSummoners({region, ids: [id]})
   );
 }
 
