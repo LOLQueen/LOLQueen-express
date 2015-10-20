@@ -11,9 +11,13 @@ import {handleError, makeRouter} from 'utils';
 import {map, propEq, clone, __, prop, compose, pluck, chain, objOf, merge}
 from 'ramda';
 
+import {cache} from 'services/RedisCache';
+
 let router = makeRouter();
 
-router.get('/', async function(request, response){
+router.get('/',
+  cache({type: 'application/json'}), 
+  async function(request, response) {
   const region = request.params.region;
   const summonerId = request.query['summoner-id'];
 

@@ -3,6 +3,8 @@ import {fetchStaticFromRiot, fetchFromRiot} from './core';
 import {
   transformChampion,
   transformSummoner,
+  transformSpell,
+  transformItem,
 } from './transforms';
 
 import {
@@ -18,7 +20,6 @@ import {
 } from 'ramda';
 
 const intoFourties = compose(splitEvery(40), uniq);
-const reindex = partial(reindexWith, [x => x]);
 
 async function reindexWith (fn, key, data) {
   return values(data).reduce(async (map, item) => (
@@ -52,17 +53,19 @@ export async function fetchChampions({region}) {
 }
 
 async function fetchSpells({region}) {
-  return reindex(
-    'id', await fetchStaticFromRiot({
+  return reindexWith(
+    transformSpell, 'id', await fetchStaticFromRiot({
       region, url: `v1.2/summoner-spell`
     })
   );
 }
 
 async function fetchItems({region}) {
-  return await fetchStaticFromRiot({
-    region, url: `v1.2/item`
-  });
+  return reindexWith(
+    transformItem, 'id', await fetchStaticFromRiot({
+      region, url: `v1.2/item`
+    })
+  );
 }
 
 export async function fetchSummoner({region, id}) {

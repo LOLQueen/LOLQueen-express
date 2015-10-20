@@ -18,3 +18,15 @@ export async function transformSummoner(summoner) {
     level: summoner.summonerLevel,
   };
 }
+
+export async function transformItem(item) {
+  return merge(item, {
+    imageUrl: `${DRAGON_URL}/item/${item.id}.png`,
+  });
+}
+
+export async function transformSpell(spell) {
+  return merge(spell, {
+    imageUrl: `${DRAGON_URL}/spell/${spell.key}.png`,
+  });
+}
