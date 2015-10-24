@@ -1,5 +1,6 @@
 import express from 'express';
 import http from 'http';
+import cors from 'cors';
 import RedisCache from 'services/RedisCache';
 import {green, red} from 'colors/safe';
 
@@ -13,6 +14,7 @@ RedisCache.on('error', (message) => {
 
 let app = express();
 
+app.use(cors());
 // requiring routes
 import routes from 'routes';
 app.use('/:region', routes);
