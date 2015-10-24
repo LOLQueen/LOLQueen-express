@@ -23,6 +23,7 @@
     "bluebird": "^2.10.2",
     "chai": "^3.3.0",
     "colors": "^1.1.2",
+    "cors": "^2.7.1",
     "express": "^4.13.3",
     "express-redis-cache": "LOLQueen/express-redis-cache",
     "hiredis": "^0.4.1",
