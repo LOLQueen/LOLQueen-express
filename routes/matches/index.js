@@ -16,7 +16,7 @@ import {cache} from 'services/RedisCache';
 let router = makeRouter();
 
 router.get('/',
-  cache({type: 'application/json'}), 
+  cache({type: 'application/json'}),
   async function(request, response) {
   const region = request.params.region;
   const summonerId = request.query['summoner-id'];
@@ -67,7 +67,7 @@ async function transformGameToMatch(game) {
   const blueTeam = game.fellowPlayers.filter(isTeamBlue);
   const stuff = {
     info: {
-      occuredAt: game.createDate,
+      occurredAt: game.createDate,
       queueType: game.subType,
       gameLength: null,
       didWin: game.stats.win,
