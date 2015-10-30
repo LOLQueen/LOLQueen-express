@@ -27,10 +27,10 @@
     "express": "^4.13.3",
     "express-redis-cache": "LOLQueen/express-redis-cache",
     "hiredis": "^0.4.1",
+    "isomorphic-fetch": "^2.2.0",
     "nodemon": "^1.7.1",
     "ramda": "^0.18.0",
     "redis": "^2.2.1",
-    "request": "^2.65.0",
     "require-dir": "^0.3.0",
     "require-directory": "^2.1.1",
     "winston": "^1.1.0"

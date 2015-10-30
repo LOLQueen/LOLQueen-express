@@ -1,36 +1,34 @@
-import request from 'request';
-import bluebird from 'bluebird';
-import {expect} from 'chai';
-import {prop} from 'ramda';
+import fetch from 'isomorphic-fetch';
+import {stringify} from 'querystring';
+import {prop, composeP, invoker} from 'ramda';
 import {API_KEY} from 'secrets';
-import winston from 'winston';
 
-const $request = bluebird.promisify(request);
+const RIOT_API = `https://na.api.pvp.net/api/lol`;
+const RIOT_STATIC_API = `https://global.api.pvp.net/api/lol/static-data`;
 
-const BASE_URL = `https://na.api.pvp.net`;
-const STATIC_BASE_URL = `https://global.api.pvp.net`;
-
-function fetch(base) {
+function createFetchFn(apiUrl) {
   return function({region, url}) {
-    expect(region).to.be.ok;
-    expect(url).to.be.a('string');
-    winston.log(`${base}/${region}/${url}`);
+    const tokenQS = stringify({'api_key': API_KEY});
+    const location = `${apiUrl}/${region}/${url}?${tokenQS}`;
 
-    return $request({
-      method: 'GET',
-      uri: `${base}/${region}/${url}`,
-      qs: {
-        'api_key': API_KEY,
-      },
-    })
-      .then(prop(1))  // obtain the response body
-      .then(JSON.parse);
+    return fetch(location)
+      .then(checkStatus)
+      .then(invoker(0, 'json'));
   };
 }
 
-export const fetchFromRiot = fetch(`${BASE_URL}/api/lol`);
+export const fetchFromRiot = createFetchFn(RIOT_API);
+export const fetchStaticFromRiot = composeP(
+  prop('data'),
+  createFetchFn(RIOT_STATIC_API)
+);
 
-const fetchStatic = fetch(`${STATIC_BASE_URL}/api/lol/static-data`);
-export async function fetchStaticFromRiot(...args) {
-  return (await fetchStatic(...args)).data;
+function checkStatus(response) {
+  if (response.status >= 200 && response.status < 400) {
+    return response;
+  } else {
+    var error = new Error(response.statusText);
+    error.response = response;
+    throw error;
+  }
 }
