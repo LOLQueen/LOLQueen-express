@@ -1,6 +1,5 @@
 import fetch from 'isomorphic-fetch';
 import {stringify} from 'querystring';
-import {expect} from 'chai';
 import {prop, composeP, invoker} from 'ramda';
 import {API_KEY} from 'secrets';
 
