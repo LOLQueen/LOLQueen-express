@@ -1,11 +1,11 @@
-import {expect} from 'chai';
-import {Router} from 'express';
+import { expect } from 'chai';
+import { Router } from 'express';
 
-export function handleError(response, {error}) {
+export function handleError(response, { error }) {
   expect(error).to.be.an('error');
   response.status(400).send({
     message: error.message,
-    stack: error.stack
+    stack: error.stack,
   });
 }
 

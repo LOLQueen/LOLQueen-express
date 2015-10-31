@@ -1,9 +1,9 @@
-import {merge} from 'ramda';
+import { merge } from 'ramda';
 const DRAGON_URL = `http://ddragon.leagueoflegends.com/cdn/5.20.1/img`;
 
 export async function transformChampion(champ) {
   return merge(champ, {
-    imageUrl: `${DRAGON_URL}/champion/${champ.key}.png`
+    imageUrl: `${DRAGON_URL}/champion/${champ.key}.png`,
   });
 }
 
