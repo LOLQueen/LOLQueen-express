@@ -70,6 +70,14 @@ export async function fetchSummoner({ region, id }) {
   );
 }
 
+export async function fetchMatch({ region, id, timeline = true }) {
+  return id && await fetchFromRiot({
+    region, url: `v2.2/match/${id}`, query: {
+      includeTimeline: timeline,
+    },
+  });
+}
+
 export const fetchChampion = fetchSingleWith(fetchChampions);
 export const fetchSpell = fetchSingleWith(fetchSpells);
 export const fetchItem = fetchSingleWith(fetchItems);
