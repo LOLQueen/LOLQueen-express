@@ -143,5 +143,6 @@
     "space-infix-ops": 2,
     "space-return-throw-case": 2,
     "spaced-comment": 2,
+    "object-curly-spacing": [2, "always"]
   }
 }

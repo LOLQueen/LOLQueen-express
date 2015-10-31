@@ -1,14 +1,14 @@
 import fetch from 'isomorphic-fetch';
-import {stringify} from 'querystring';
-import {prop, composeP, invoker} from 'ramda';
-import {API_KEY} from 'secrets';
+import { stringify } from 'querystring';
+import { prop, composeP, invoker } from 'ramda';
+import { API_KEY } from 'secrets';
 
 const RIOT_API = `https://na.api.pvp.net/api/lol`;
 const RIOT_STATIC_API = `https://global.api.pvp.net/api/lol/static-data`;
 
 function createFetchFn(apiUrl) {
-  return function({region, url}) {
-    const tokenQS = stringify({'api_key': API_KEY});
+  return function fetchFn({ region, url }) {
+    const tokenQS = stringify({ 'api_key': API_KEY });
     const location = `${apiUrl}/${region}/${url}?${tokenQS}`;
 
     return fetch(location)
@@ -26,9 +26,9 @@ export const fetchStaticFromRiot = composeP(
 function checkStatus(response) {
   if (response.status >= 200 && response.status < 400) {
     return response;
-  } else {
-    var error = new Error(response.statusText);
-    error.response = response;
-    throw error;
   }
+  throw Object.assign(
+    new Error(response.statusText),
+    { response }
+  );
 }

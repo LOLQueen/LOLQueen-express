@@ -4,34 +4,31 @@ import {
   fetchChampions,
   fetchSpell,
   fetchItem,
-  fetchSummoner,
   fetchSummoners,
 } from 'services/RIOTApi';
-import {handleError, makeRouter} from 'utils';
-import {map, propEq, clone, __, prop, compose, pluck, chain, objOf, merge}
+import { handleError, makeRouter } from 'utils';
+import { map, propEq, clone, compose, pluck, chain, merge, }
 from 'ramda';
 
-import {cache} from 'services/RedisCache';
+import { cache } from 'services/RedisCache';
 
-let router = makeRouter();
-
-router.get('/',
-  cache({type: 'application/json'}),
-  async function(request, response) {
-  const region = request.params.region;
-  const summonerId = request.query['summoner-id'];
-
-  try {
-    const {games} = await fetchGames({ region, summonerId });
-    response.send(await* map(transformGameToMatch)(
-      await transformPlayersInGames(region, games)
-    ));
-  } catch (ex) {
-    handleError(response, {
-      error: ex
-    });
-  }
-});
+export default makeRouter()
+  .get('/', cache({ type: 'application/json' }),
+    async (request, response) => {
+      const region = request.params.region;
+      const summonerId = request.query['summoner-id'];
+      try {
+        const { games } = await fetchGames({ region, summonerId });
+        response.send(await* map(transformGameToMatch)(
+          await transformPlayersInGames(region, games)
+        ));
+      } catch (ex) {
+        handleError(response, {
+          error: ex,
+        });
+      }
+    }
+);
 
 const isTeamPurple = propEq('teamId', 200);
 const isTeamBlue = propEq('teamId', 100);
@@ -42,10 +39,9 @@ const extract = (property) => compose(
 
 async function transformPlayersInGames(region, games) {
   const summonerIds = extract('summonerId')(games);
-  const championIds = extract('championId')(games);
 
-  const summoners = await fetchSummoners({region, ids: summonerIds});
-  const champions = await fetchChampions({region});
+  const summoners = await fetchSummoners({ region, ids: summonerIds });
+  const champions = await fetchChampions({ region });
 
   return games.map((game) => {
     const fellowPlayers = game.fellowPlayers;
@@ -65,7 +61,7 @@ async function transformGameToMatch(game) {
   const region = 'na';
   const purpleTeam = game.fellowPlayers.filter(isTeamPurple);
   const blueTeam = game.fellowPlayers.filter(isTeamBlue);
-  const stuff = {
+  return {
     info: {
       occurredAt: game.createDate,
       queueType: game.subType,
@@ -89,9 +85,6 @@ async function transformGameToMatch(game) {
       purple: purpleTeam,
     },
     team: isTeamBlue(game) ? 'blue' : 'purple',
-    stats: clone(game.stats)
+    stats: clone(game.stats),
   };
-  return stuff;
 }
-
-export default router;
