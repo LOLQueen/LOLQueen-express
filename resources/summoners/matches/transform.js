@@ -16,6 +16,7 @@ async function transformGameToMatch(game) {
   const purpleTeam = game.fellowPlayers.filter(isTeamPurple);
   const blueTeam = game.fellowPlayers.filter(isTeamBlue);
   return {
+    id: game.gameId,
     info: {
       occurredAt: game.createDate,
       queueType: game.subType,
