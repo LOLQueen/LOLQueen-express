@@ -4,7 +4,6 @@ import {
   fetchSpell,
   fetchItem,
   fetchSummoners,
-  fetchMatch,
 } from 'services/RIOTApi';
 
 import { propEq, clone, compose, pluck, chain, merge, map } from 'ramda';
@@ -16,15 +15,12 @@ function transformGameToMatch(region) {
   return async (game) => {
     const purpleTeam = game.fellowPlayers.filter(isTeamPurple);
     const blueTeam = game.fellowPlayers.filter(isTeamBlue);
-    const match = await fetchMatch({
-      region, id: game.gameId,
-    });
     return {
       id: game.gameId,
       info: {
         occurredAt: game.createDate,
         queueType: game.subType,
-        gameLength: match.matchDuration * 1000,
+        gameLength: null,
         didWin: game.stats.win,
       },
       champion: await fetchChampion({
