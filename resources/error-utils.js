@@ -3,7 +3,8 @@ import { expect } from 'chai';
 
 export function handleErrors(error, request, response, next) {
   expect(error).to.be.an('error');
-  response.status(400).send({
+  const status = error.response ? error.response.status : 418;
+  response.status(status).send({
     message: error.message,
     stack: error.stack,
   });
