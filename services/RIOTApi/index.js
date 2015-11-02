@@ -4,6 +4,7 @@ import {
   transformSummoner,
   transformSpell,
   transformItem,
+  transformGames,
 } from './transforms';
 
 import {
@@ -17,7 +18,7 @@ import {
 
 const intoFourties = compose(splitEvery(40), uniq);
 
-async function reindexWith(fn, key, data) {
+async function restructureMap(fn, key, data) {
   return values(data).reduce(async (map, item) => (
     (await map)[item[key]] = await fn(item), map
   ), {});
@@ -26,7 +27,7 @@ async function reindexWith(fn, key, data) {
 export async function fetchSummoners({ names, ids, region }) {
   const array = intoFourties(ids ? ids : names);
   return mergeAll(await* array.map(async (params) => {
-    return reindexWith(
+    return restructureMap(
       transformSummoner(region), 'id', await fetchFromRiot({
         region, url: `v1.4/summoner/${ids ? params : `by-name/${params}`}`,
       })
@@ -35,13 +36,17 @@ export async function fetchSummoners({ names, ids, region }) {
 }
 
 export async function fetchGames({ region, summonerId }) {
-  return summonerId && await fetchFromRiot({
-    region, url: `v1.3/game/by-summoner/${summonerId}/recent`,
-  });
+  return summonerId && restructureMap(
+    x => x, 'id', await transformGames(region)(
+      prop('games', await fetchFromRiot({
+        region, url: `v1.3/game/by-summoner/${summonerId}/recent`,
+      }))
+    )
+  );
 }
 
 export async function fetchChampions({ region }) {
-  return reindexWith(
+  return restructureMap(
     transformChampion, 'id', await fetchStaticFromRiot({
       region, url: `v1.2/champion`,
     })
@@ -49,7 +54,7 @@ export async function fetchChampions({ region }) {
 }
 
 async function fetchSpells({ region }) {
-  return reindexWith(
+  return restructureMap(
     transformSpell, 'id', await fetchStaticFromRiot({
       region, url: `v1.2/summoner-spell`,
     })
@@ -57,7 +62,7 @@ async function fetchSpells({ region }) {
 }
 
 async function fetchItems({ region }) {
-  return reindexWith(
+  return restructureMap(
     transformItem, 'id', await fetchStaticFromRiot({
       region, url: `v1.2/item`,
     })
