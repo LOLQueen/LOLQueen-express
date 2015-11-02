@@ -70,9 +70,9 @@ async function transformPlayersInGames(region, games) {
   });
 }
 
-export default async function transform(region, games) {
+export default (region) => async (games) => {
   return await* map(
     transformGameToMatch(region),
     await transformPlayersInGames(region, games)
   );
-}
+};

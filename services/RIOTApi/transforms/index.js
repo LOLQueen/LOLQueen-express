@@ -33,3 +33,5 @@ export async function transformSpell(spell) {
     imageUrl: `${DRAGON_URL}/spell/${spell.key}.png`,
   });
 }
+
+export { default as transformGames } from './games';
