@@ -27,7 +27,7 @@ export async function fetchSummoners({ names, ids, region }) {
   const array = intoFourties(ids ? ids : names);
   return mergeAll(await* array.map(async (params) => {
     return reindexWith(
-      transformSummoner, 'id', await fetchFromRiot({
+      transformSummoner(region), 'id', await fetchFromRiot({
         region, url: `v1.4/summoner/${ids ? params : `by-name/${params}`}`,
       })
     );

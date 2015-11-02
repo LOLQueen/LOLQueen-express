@@ -7,15 +7,18 @@ export async function transformChampion(champ) {
   });
 }
 
-export async function transformSummoner(summoner) {
-  return {
-    id: summoner.id,
-    name: summoner.name,
-    profileIcon: {
-      id: summoner.profileIconId,
-      imageUrl: `${DRAGON_URL}/profileicon/${summoner.profileIconId}.png`,
-    },
-    level: summoner.summonerLevel,
+export function transformSummoner(region) {
+  return async (summoner) => {
+    return {
+      id: summoner.id,
+      name: summoner.name,
+      region: region,
+      level: summoner.summonerLevel,
+      profileIcon: {
+        id: summoner.profileIconId,
+        imageUrl: `${DRAGON_URL}/profileicon/${summoner.profileIconId}.png`,
+      },
+    };
   };
 }
 
