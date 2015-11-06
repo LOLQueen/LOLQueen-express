@@ -20,7 +20,7 @@ function transformGameToMatch(region) {
       info: {
         occurredAt: game.createDate,
         queueType: game.subType,
-        gameLength: null,
+        gameLength: game.stats.timePlayed * 1000,
         didWin: game.stats.win,
       },
       champion: await fetchChampion({
