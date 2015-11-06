@@ -6,7 +6,7 @@ import {
   fetchSummoners,
 } from 'services/RIOTApi';
 
-import { propEq, clone, compose, pluck, chain, merge, map } from 'ramda';
+import { propEq, clone, compose, pluck, chain, merge, map, filter } from 'ramda';
 
 const isTeamPurple = propEq('teamId', 200);
 const isTeamBlue = propEq('teamId', 100);
@@ -47,17 +47,17 @@ function transformGameToMatch(region) {
 
 const extractSummonerIds = compose(
   chain(pluck('summonerId')),
+  filter(Boolean),
   pluck('fellowPlayers')
 );
 
 async function transformPlayersInGames(region, games) {
   const summonerIds = extractSummonerIds(games);
-
   const summoners = await fetchSummoners({ region, ids: summonerIds });
   const champions = await fetchChampions({ region });
 
   return games.map((game) => {
-    const fellowPlayers = game.fellowPlayers;
+    const { fellowPlayers = [] } = game;
     return merge(game, {
       fellowPlayers: fellowPlayers.map((player) => {
         return player && {
