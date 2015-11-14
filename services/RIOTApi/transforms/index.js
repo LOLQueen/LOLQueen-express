@@ -1,5 +1,5 @@
 import { merge } from 'ramda';
-const DRAGON_URL = `http://ddragon.leagueoflegends.com/cdn/5.20.1/img`;
+const DRAGON_URL = `http://ddragon.leagueoflegends.com/cdn/5.22.3/img`;
 
 export async function transformChampion(champ) {
   return merge(champ, {
