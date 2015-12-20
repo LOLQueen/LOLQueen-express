@@ -2,6 +2,7 @@ GET /${region}/summoner?names=AznCr4ck&names=HorseCrusher
   {
     AznCr4ck: {
       id: number,
+      division: string,
       summonerLevel: number,
       profileIdconId: number
     },
@@ -10,7 +11,7 @@ GET /${region}/summoner?names=AznCr4ck&names=HorseCrusher
     }
   }
 
-  GET /api/lol/{region}/v1.4/summoner/by-name/{summonerNames}                  
+  GET /api/lol/{region}/v1.4/summoner/by-name/{summonerNames}
 
   Response data returned from RIOT end-point:
     {"azncr4ck": {
@@ -34,64 +35,64 @@ GET /${region}/matches?summoner-id=AznCr4ck
           didWin: Boolean               [rawstats.win]
         },
         champion: {
-          name: 
+          name:
           id:                           [championId]
           image:
         },
         spells: [                       [spell1 and spell2, query to get more details]
           {
-            name: 
-            description: 
-            image-url: 
+            name:
+            description:
+            image-url:
           },
           {
-            name: 
+            name:
             description:
             image-url:
           }
         ],
         items: [                        [items 0 to 6] (integers so we'll have to do another fetch)
           {
-            name: 
+            name:
             description:
-            image-url: 
+            image-url:
           },
           ...
         ],
         trinket: {                      [item 6]
-          name: 
+          name:
           description:
           image-url:
         },
         teams: {
           blue: [
             {
-              summonerName: 
+              summonerName:
               champion: {               [champion id, from which we can get the name]
-                name: 
-                image-url: 
+                name:
+                image-url:
               },
             }
           ],
           purple: [
             {
-              summonerName: 
+              summonerName:
               champion: {
-                name: 
-                image-url: 
+                name:
+                image-url:
               },
             }
           ]
         }
 x        team: 'blue';
         playerStats: {
-          kills: 
-          deaths: 
-          assists: 
+          kills:
+          deaths:
+          assists:
           championLevel:                 [level]
           creeps:
-          gold: 
-          wardsPlaced: 
+          gold:
+          wardsPlaced:
           role: 'top/mid/jungle/ad/support'
           totalDamageDeltToChamptions,
           totalDamageTaken:

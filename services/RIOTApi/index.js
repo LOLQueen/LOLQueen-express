@@ -5,6 +5,7 @@ import {
   transformSpell,
   transformItem,
   transformGames,
+  transformSummonerRank,
 } from './transforms';
 
 import {
@@ -81,6 +82,14 @@ export async function fetchMatch({ region, id, timeline = true }) {
       includeTimeline: timeline,
     },
   });
+}
+
+export async function fetchSummonerRanks({ region, id }) {
+  return id && restructureMap(
+    transformSummonerRank, 'queue', prop(id, await fetchFromRiot({
+      region, url: `v2.5/league/by-summoner/${id}/entry`,
+    }))
+  );
 }
 
 export const fetchChampion = fetchSingleWith(fetchChampions);
