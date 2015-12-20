@@ -1,7 +1,7 @@
 import { merge } from 'ramda';
 import { fetchSummonerRanks } from '../index';
 
-const DRAGON_URL = `http://ddragon.leagueoflegends.com/cdn/5.22.3/img`;
+const DRAGON_URL = `http://ddragon.leagueoflegends.com/cdn/5.24.2/img`;
 
 export async function transformChampion(champ) {
   return merge(champ, {
