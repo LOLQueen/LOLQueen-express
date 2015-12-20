@@ -5,6 +5,6 @@ export async function httpGetSummoners(request, response) {
   const region = request.params.region;
   const names = toArray(request.query.names);
   response.send(await fetchSummoners({
-    names, region,
+    names, region, fetchRanks: true,
   }));
 }

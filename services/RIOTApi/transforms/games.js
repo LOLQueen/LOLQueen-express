@@ -53,7 +53,9 @@ const extractSummonerIds = compose(
 
 async function transformPlayersInGames(region, games) {
   const summonerIds = extractSummonerIds(games);
-  const summoners = await fetchSummoners({ region, ids: summonerIds });
+  const summoners = await fetchSummoners({
+    region, ids: summonerIds, fetchRanks: false,
+  });
   const champions = await fetchChampions({ region });
 
   return games.map((game) => {

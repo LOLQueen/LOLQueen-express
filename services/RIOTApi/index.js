@@ -25,11 +25,13 @@ async function restructureMap(fn, key, data) {
   ), {});
 }
 
-export async function fetchSummoners({ names, ids, region }) {
+export async function fetchSummoners({
+  names, ids, region, fetchRanks = false,
+}) {
   const array = intoFourties(ids ? ids : names);
   return mergeAll(await* array.map(async (params) => {
     return restructureMap(
-      transformSummoner(region), 'id', await fetchFromRiot({
+      transformSummoner(region, fetchRanks), 'id', await fetchFromRiot({
         region, url: `v1.4/summoner/${ids ? params : `by-name/${params}`}`,
       })
     );

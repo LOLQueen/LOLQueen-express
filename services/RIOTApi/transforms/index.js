@@ -9,12 +9,14 @@ export async function transformChampion(champ) {
   });
 }
 
-export function transformSummoner(region) {
+export function transformSummoner(region, shouldFetchRanks) {
   return async (summoner) => {
     return {
       id: summoner.id,
       name: summoner.name,
-      ranks: await fetchSummonerRanks({ region, id: summoner.id }),
+      ranks: shouldFetchRanks
+        ? await fetchSummonerRanks({ region, id: summoner.id })
+        : null,
       region: region,
       level: summoner.summonerLevel,
       profileIcon: {
