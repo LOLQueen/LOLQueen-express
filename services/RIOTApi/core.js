@@ -3,6 +3,14 @@ import { stringify } from 'querystring';
 import { prop, composeP, merge } from 'ramda';
 import { API_KEY } from 'secrets';
 import bluebird from 'bluebird';
+import { createWriteStream } from 'fs';
+import { Console } from 'console';
+import { normalize } from 'path';
+
+const logger = new Console(
+  createWriteStream(normalize(`./network.clog`)),
+  createWriteStream(normalize(`./error.clog`))
+);
 
 const RIOT_API = `https://na.api.pvp.net/api/lol`;
 const RIOT_STATIC_API = `https://global.api.pvp.net/api/lol/static-data`;
@@ -22,6 +30,7 @@ function createFetchFn(baseAPIUrl) {
     const resourceUrl = `${baseAPIUrl}/${region}/${url}?${
       stringify(merge(query, { 'api_key': API_KEY }))
     }`;
+    logger.log(`${Date.now()}: ${resourceUrl}`);
     return fetchFromUrl(resourceUrl)
       .then(response => response.json());
   };

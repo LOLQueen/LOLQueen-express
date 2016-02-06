@@ -2,3 +2,4 @@ node_modules/
 public/dragon
 *.log
 *rdb
+*.clog
