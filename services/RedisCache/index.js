@@ -1,9 +1,9 @@
 import ExpressRedisCache from 'express-redis-cache';
 
-const TEN_MINUTES = 60 * 10;
+const TWENTY_MINUTES = 60 * 20;
 
 const RedisCache = ExpressRedisCache({
-  expire: TEN_MINUTES,
+  expire: TWENTY_MINUTES,
 });
 
 export default RedisCache;

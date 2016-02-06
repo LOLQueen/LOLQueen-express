@@ -8,6 +8,6 @@ const jsonCache = () => cache({ type: 'application/json' });
 
 export default Router()
   .get('/:region/summoners', $(httpGetSummoners))
-  // .get('/:region/summoners/:summonerId/matches', jsonCache())
+  .get('/:region/summoners/:summonerId/matches', jsonCache())
   .get('/:region/summoners/:summonerId/matches', $(httpGetSummonerMatches))
   .use(handleErrors);
